@@ -29,8 +29,6 @@ class UpcomingClasses extends StatefulWidget {
 }
 
 class _UpcomingClassesState extends State<UpcomingClasses> {
-  final classes = ["Class 1", "Class 2", "Class 3"];
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -47,6 +45,7 @@ class _UpcomingClassesState extends State<UpcomingClasses> {
             if (snapshot.hasData) {
               List<DocumentSnapshot> docs = snapshot.data.documents;
               return ListView.builder(
+                  physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   itemCount: docs.length,
                   itemBuilder: (context, i) {
@@ -64,6 +63,11 @@ class _UpcomingClassesState extends State<UpcomingClasses> {
                                     docSnap.data.length.toString());
                               } else
                                 return Text("Attendees: 0");
+                            } else if (snapshot.hasError) {
+                              return Container(
+                                color: Colors.red,
+                                child: Text("Error"),
+                              );
                             } else
                               return CircularProgressIndicator();
                           },
