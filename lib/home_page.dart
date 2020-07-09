@@ -1,5 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'class_punch_card.dart';
+import 'database_service.dart';
+
+final db = DatabaseService();
 
 class HomePage extends StatelessWidget {
   @override
@@ -37,17 +41,40 @@ class _UpcomingClassesState extends State<UpcomingClasses> {
           padding: const EdgeInsets.all(8.0),
           child: Text("Upcoming Classes: "),
         ),
-        ListView.builder(
-            physics: NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: classes.length,
-            itemBuilder: (context, i) {
-              return Card(
-                child: ListTile(
-                  title: Text(classes[i]),
-                ),
-              );
-            }),
+        StreamBuilder(
+          stream: db.upcomingClassesStream(),
+          builder: (context, AsyncSnapshot snapshot) {
+            if (snapshot.hasData) {
+              List<DocumentSnapshot> docs = snapshot.data.documents;
+              return ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: docs.length,
+                  itemBuilder: (context, i) {
+                    DocumentSnapshot docSnap = docs[i];
+                    return Card(
+                      child: ListTile(
+                        title: Text(docSnap["title"]),
+                        trailing: FutureBuilder(
+                          future: db.getAttendees(docSnap.documentID),
+                          builder: (context, AsyncSnapshot snapshot) {
+                            if (snapshot.hasData) {
+                              DocumentSnapshot docSnap = snapshot.data;
+                              if (docSnap.exists) {
+                                return Text("Attendees: " +
+                                    docSnap.data.length.toString());
+                              } else
+                                return Text("Attendees: 0");
+                            } else
+                              return CircularProgressIndicator();
+                          },
+                        ),
+                      ),
+                    );
+                  });
+            } else
+              return CircularProgressIndicator();
+          },
+        ),
       ],
     );
   }
