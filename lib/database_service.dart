@@ -1,10 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DatabaseService {
-  static final db = Firestore.instance;
+  static final db = FirebaseFirestore.instance;
   static final CollectionReference classesRef = db.collection("classes");
-  static final CollectionReference attendeesRef = db.collection("classAttendees");
+  static final CollectionReference attendeesRef =
+      db.collection("classAttendees");
 
   DatabaseService();
 
@@ -12,8 +12,7 @@ class DatabaseService {
     return classesRef.orderBy('timestamp').limit(3).snapshots();
   }
 
-  Future<DocumentSnapshot> getAttendees(String classId) async {
-    DocumentSnapshot snapshot = await attendeesRef.document(classId).get();
-    return snapshot;
+  Future<DocumentSnapshot> getAttendees(String classId) {
+    return attendeesRef.doc(classId).get();
   }
 }

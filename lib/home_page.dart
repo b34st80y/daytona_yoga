@@ -55,13 +55,13 @@ class _UpcomingClassesState extends State<UpcomingClasses> {
                       child: ListTile(
                         title: Text(docSnap["title"]),
                         trailing: FutureBuilder(
-                          future: db.getAttendees(docSnap.documentID),
+                          future: db.getAttendees(docSnap.id),
                           builder: (context, AsyncSnapshot snapshot) {
                             if (snapshot.hasData) {
-                              DocumentSnapshot docSnap = snapshot.data;
+                              DocumentSnapshot<Map> docSnap = snapshot.data;
                               if (docSnap.exists) {
                                 return Text("Attendees: " +
-                                    docSnap.data.length.toString());
+                                    docSnap.data()!.length.toString());
                               } else
                                 return Text("Attendees: 0");
                             } else

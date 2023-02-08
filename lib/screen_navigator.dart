@@ -17,11 +17,11 @@ class _ScreenNavigatorState extends State<ScreenNavigator> {
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            title: Text("Home"),
+            label: "Home",
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.face),
-            title: Text("Account"),
+            label: "Account",
           )
         ],
       ),
